@@ -121,22 +121,34 @@ document.getElementById("fileInput").addEventListener("change", function(event) 
     }
 });
 
-document.getElementById('valorCofrinho').addEventListener('keydown', function(event) {
-    if (!/[0-9,]/.test(event.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-        event.preventDefault();
+function validarEntrada(event, regex) {
+    const div = event.target;
+    
+    let textoLimpo = div.innerText.replace(regex, '');
+
+    if (div.innerText !== textoLimpo) {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        
+        div.innerText = textoLimpo; 
+        
+        range.setStart(div.childNodes[0] || div, textoLimpo.length);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
     }
+}
+
+document.getElementById('valorCofrinho').addEventListener('input', function(event) {
+    validarEntrada(event, /[^0-9,]/g);
 });
 
-document.getElementById('tempoCofrinho').addEventListener('keydown', function(event) {
-    if (!/[0-9]/.test(event.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-        event.preventDefault();
-    }
+document.getElementById('tempoCofrinho').addEventListener('input', function(event) {
+    validarEntrada(event, /[^0-9]/g);
 });
 
-document.getElementById('guardarCofrinho').addEventListener('keydown', function(event) {
-    if (!/[0-9,]/.test(event.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-        event.preventDefault();
-    }
+document.getElementById('guardarCofrinho').addEventListener('input', function(event) {
+    validarEntrada(event, /[^0-9,]/g);
 });
 
 let contadorCofrinho = 1
