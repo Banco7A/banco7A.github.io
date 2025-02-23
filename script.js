@@ -123,33 +123,48 @@ document.getElementById("fileInput").addEventListener("change", function(event) 
 
 function validarEntrada(event, regex) {
     const div = event.target;
-    
     let textoLimpo = div.innerText.replace(regex, '');
 
     if (div.innerText !== textoLimpo) {
-        const selection = window.getSelection();
+        div.innerText = textoLimpo;
+
         const range = document.createRange();
-        
-        div.innerText = textoLimpo; 
-        
-        range.setStart(div.childNodes[0] || div, textoLimpo.length);
-        range.collapse(true);
+        const selection = window.getSelection();
+        range.selectNodeContents(div);
+        range.collapse(false);
         selection.removeAllRanges();
         selection.addRange(range);
     }
 }
 
-document.getElementById('valorCofrinho').addEventListener('input', function(event) {
-    validarEntrada(event, /[^0-9,]/g);
-});
+function bloquearTeclas(event, regex) {
+    if (!regex.test(event.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+        event.preventDefault();
+    }
+}
 
-document.getElementById('tempoCofrinho').addEventListener('input', function(event) {
-    validarEntrada(event, /[^0-9]/g);
-});
+function bloquearColagem(event, regex) {
+    event.preventDefault();
+    const textoColado = (event.clipboardData || window.clipboardData).getData('text');
+    const textoFiltrado = textoColado.replace(regex, '');
+    document.execCommand('insertText', false, textoFiltrado);
+}
 
-document.getElementById('guardarCofrinho').addEventListener('input', function(event) {
-    validarEntrada(event, /[^0-9,]/g);
-});
+const valorCofrinho = document.getElementById('valorCofrinho');
+valorCofrinho.addEventListener('input', function(event) { validarEntrada(event, /[^0-9,]/g); });
+valorCofrinho.addEventListener('keydown', function(event) { bloquearTeclas(event, /[0-9,]/); });
+valorCofrinho.addEventListener('paste', function(event) { bloquearColagem(event, /[^0-9,]/g); });
+
+const tempoCofrinho = document.getElementById('tempoCofrinho');
+tempoCofrinho.addEventListener('input', function(event) { validarEntrada(event, /[^0-9]/g); });
+tempoCofrinho.addEventListener('keydown', function(event) { bloquearTeclas(event, /[0-9]/); });
+tempoCofrinho.addEventListener('paste', function(event) { bloquearColagem(event, /[^0-9]/g); });
+
+const guardarCofrinho = document.getElementById('guardarCofrinho');
+guardarCofrinho.addEventListener('input', function(event) { validarEntrada(event, /[^0-9,]/g); });
+guardarCofrinho.addEventListener('keydown', function(event) { bloquearTeclas(event, /[0-9,]/); });
+guardarCofrinho.addEventListener('paste', function(event) { bloquearColagem(event, /[^0-9,]/g); });
+
 
 let contadorCofrinho = 1
 
