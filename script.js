@@ -4,20 +4,20 @@ document.addEventListener("DOMContentLoaded", function() {
     })
     document.getElementById('homeDiv').style.display = 'flex'
     abrirFerramenta(localStorage.getItem('ultimaFerramenta'))
+});
 
-    let divButtons = document.querySelectorAll("section div div");
+let divButtons = document.querySelectorAll("section div div");
 
-    divButtons.forEach(div => {
-        let buttons = Array.from(div.querySelectorAll("button"));
+divButtons.forEach(div => {
+    let buttons = Array.from(div.querySelectorAll("button"));
 
-        buttons.forEach((btn, index) => {
-            let separator = document.createElement("span");
-            separator.classList.add("separator");
+    buttons.forEach((btn, index) => {
+        let separator = document.createElement("span");
+        separator.classList.add("separator");
 
-            if (index < buttons.length - 1) {
-                btn.after(separator);
-            }
-        });
+        if (index < buttons.length - 1) {
+            btn.after(separator);
+        }
     });
 });
 
