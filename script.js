@@ -3,33 +3,42 @@ document.addEventListener("DOMContentLoaded", function() {
         div.style.display = 'none'
     })
     document.getElementById('homeDiv').style.display = 'flex'
-    abrirFerramenta(localStorage.getItem('ultimaFerramenta'))
+    criarSeparadores()
 });
 
 let divButtons = document.querySelectorAll("section div div");
 
-divButtons.forEach(div => {
-    let buttons = Array.from(div.querySelectorAll("button"));
+function criarSeparadores() {
+    document.querySelectorAll('.separator').forEach(e => {
+        e.remove('')
+    })
 
-    buttons.forEach((btn, index) => {
-        let separator = document.createElement("span");
-        separator.classList.add("separator");
-
-        if (index < buttons.length - 1) {
-            btn.after(separator);
-        }
+    divButtons.forEach(div => {
+        let buttons = Array.from(div.querySelectorAll("button"));
+    
+        buttons.forEach((btn, index) => {
+            let separator = document.createElement("span");
+            separator.classList.add("separator");
+    
+            if (index < buttons.length - 1) {
+                btn.after(separator);
+            }
+        });
     });
-});
+    
+}
 
 document.getElementById('ferramentas').querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
         abrirFerramenta(btn.id + 'Div')
+        criarSeparadores()
     })
 })
 
 document.getElementById('ferramentasPix').querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
         abrirFerramenta(btn.id + 'Div')
+        criarSeparadores()
     })
 })
 
@@ -37,21 +46,45 @@ document.getElementById('contatosrecentes').querySelectorAll('button').forEach(b
     btn.addEventListener('click', () => {
         localStorage.setItem('contatoselecionado', btn.innerText)
         abrirFerramenta('transferirDiv')
+        criarSeparadores()
     }) 
 })
 
 document.getElementById('cartoes').querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
         abrirFerramenta(btn.id + 'Div')
+        criarSeparadores()
     }) 
 })
 
 function abrirFerramenta(btn) {
-    localStorage.setItem('ultimaFerramenta', btn)
-    document.querySelectorAll('section').forEach(div => {
-        div.style.display = 'none'
-    })
-    document.getElementById(btn).style.display = 'flex'
+    let todasAsDivs = document.querySelectorAll('section');
+    let novaDiv = document.getElementById(btn);
+
+    todasAsDivs.forEach(div => {
+        if (div.id !== btn) {
+            div.style.transition = 'opacity 0.3s ease-in-out';
+            div.style.opacity = '0';
+
+            setTimeout(() => {
+                div.style.visibility = 'hidden';
+                div.style.display = 'none';
+            }, 300);
+        }
+    });
+
+    setTimeout(() => {
+        if (novaDiv) {
+            novaDiv.style.display = 'flex';
+            novaDiv.style.visibility = 'visible';
+            novaDiv.style.opacity = '0'; 
+            novaDiv.style.transition = 'opacity 0.3s ease-in-out';
+
+            setTimeout(() => {
+                novaDiv.style.opacity = '1'; 
+            }, 20); 
+        }
+    }, 300); 
 }
 
 function abrirPopUp(popUp) {
@@ -63,6 +96,14 @@ let canSee = true;
 let valoresOriginais = [];
 
 document.getElementById('ocultar').addEventListener('click', () => {
+    if (document.getElementById('ocultar').querySelector('i').classList.contains('fa-eye')) {
+        document.getElementById('ocultar').querySelector('i').classList.remove('fa-eye')
+        document.getElementById('ocultar').querySelector('i').classList.add('fa-eye-slash')
+    } else {
+        document.getElementById('ocultar').querySelector('i').classList.remove('fa-eye-slash')
+        document.getElementById('ocultar').querySelector('i').classList.add('fa-eye')
+    }
+    
     document.querySelectorAll('.valor').forEach((valor, index) => {
         if (canSee) {
             if (!valoresOriginais[index]) {
@@ -80,7 +121,7 @@ document.getElementById('ocultar').addEventListener('click', () => {
 let criarCofrinho = document.getElementById('criarCofrinho')
 let objetivoCofrinho
 
-criarCofrinho.querySelector('#header .xbtn').addEventListener('click', () => {
+criarCofrinho.querySelector('#criarCofrinho .header .xbtn').addEventListener('click', () => {
     criarCofrinho.querySelector('#objetivoCofrinhoDiv').style.display = 'grid';
     criarCofrinho.querySelector('#nomeCofrinhoDiv').style.display = 'none';
 });
@@ -88,6 +129,10 @@ criarCofrinho.querySelector('#header .xbtn').addEventListener('click', () => {
 criarCofrinho.querySelector('#objetivoCofrinhoDiv').querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
         document.getElementById('nomeCofrinho').innerText = '';
+        document.getElementById('valorCofrinho').innerText = '';
+        document.getElementById('tempoCofrinho').innerText = '';
+        document.getElementById('guardarCofrinho').innerText = '';
+
         objetivoCofrinho = btn.querySelector('p').innerText;
 
         if (btn.querySelector('p').innerText == 'Criar outro') {
@@ -105,94 +150,226 @@ criarCofrinho.querySelector('#objetivoCofrinhoDiv').querySelectorAll('button').f
     });
 });
 
+document.getElementById("fileInput").addEventListener("change", function (event) {
+    let file = event.target.files[0]; 
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById("prewiew").src = e.target.result;
+        };
+        reader.readAsDataURL(file); 
+    }
+});
+
+
 document.getElementById('edit-btn').addEventListener('click', () => {
     document.getElementById("fileInput").click();
 });     
 
-document.getElementById("fileInput").addEventListener("change", function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            let imgCofrinho = criarCofrinho.querySelector('#nomeCofrinhoDiv').querySelector('img');
-            imgCofrinho.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
+document.querySelectorAll('.inputEspecial').forEach(div => {
+    div.addEventListener('input', function(event) {
+        let divEvent = event.target;
+
+        let valor = divEvent.innerText.replace(/\D/g, '');
+
+        if (valor.length > 0) {
+            valor = (parseFloat(valor) / 100).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+        } else {
+            valor = "R$ 0,00";
+        }
+
+        if (divEvent.innerText !== valor) {
+            divEvent.innerText = valor;
+
+            const range = document.createRange();
+            const selection = window.getSelection();
+            range.selectNodeContents(divEvent);
+            range.collapse(false);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+    });
+
+    div.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+        }
+    });
 });
 
-function validarEntrada(event, regex) {
-    const div = event.target;
-    let textoLimpo = div.innerText.replace(regex, '');
+document.getElementById('tempoCofrinho').addEventListener('input', (event) => {
+    let div = event.target;
+    div.innerText = div.innerText.replace(/\D/g, ''); 
 
-    if (div.innerText !== textoLimpo) {
-        div.innerText = textoLimpo;
-
-        const range = document.createRange();
-        const selection = window.getSelection();
-        range.selectNodeContents(div);
-        range.collapse(false);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
-}
-
-function bloquearTeclas(event, regex) {
-    if (!regex.test(event.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-        event.preventDefault();
-    }
-}
-
-function bloquearColagem(event, regex) {
-    event.preventDefault();
-    const textoColado = (event.clipboardData || window.clipboardData).getData('text');
-    const textoFiltrado = textoColado.replace(regex, '');
-    document.execCommand('insertText', false, textoFiltrado);
-}
-
-const valorCofrinho = document.getElementById('valorCofrinho');
-valorCofrinho.addEventListener('input', function(event) { validarEntrada(event, /[^0-9,]/g); });
-valorCofrinho.addEventListener('keydown', function(event) { bloquearTeclas(event, /[0-9,]/); });
-valorCofrinho.addEventListener('paste', function(event) { bloquearColagem(event, /[^0-9,]/g); });
-
-const tempoCofrinho = document.getElementById('tempoCofrinho');
-tempoCofrinho.addEventListener('input', function(event) { validarEntrada(event, /[^0-9]/g); });
-tempoCofrinho.addEventListener('keydown', function(event) { bloquearTeclas(event, /[0-9]/); });
-tempoCofrinho.addEventListener('paste', function(event) { bloquearColagem(event, /[^0-9]/g); });
-
-const guardarCofrinho = document.getElementById('guardarCofrinho');
-guardarCofrinho.addEventListener('input', function(event) { validarEntrada(event, /[^0-9,]/g); });
-guardarCofrinho.addEventListener('keydown', function(event) { bloquearTeclas(event, /[0-9,]/); });
-guardarCofrinho.addEventListener('paste', function(event) { bloquearColagem(event, /[^0-9,]/g); });
+    const range = document.createRange();
+    const selection = window.getSelection();
+    range.selectNodeContents(div);
+    range.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(range);
+});
 
 
 let contadorCofrinho = 1
 
-document.getElementById('criarCofrinhoBtn').addEventListener('click', () => {
-    let nomeCofrinho = document.createElement('h5');
-    nomeCofrinho.innerHTML = document.getElementById('nomeCofrinho').innerText;
+function salvarCofrinhos() {
+    let cofrinhos = [];
+    document.querySelectorAll("#seusCofrinhos > div").forEach(div => {
+        let cofrinho = {
+            nome: div.querySelector(".nomeCofrinho").innerText,
+            valor: div.querySelector(".valorCofrinho").innerText,
+            imagem: div.querySelector(".imgCofrinho").src,
+            tempo: div.getAttribute("data-tempo"),
+            guardar: div.getAttribute("data-guardar")
+        };
+        cofrinhos.push(cofrinho);
+    });
 
-    let valorCofrinho = document.createElement('p');
-    valorCofrinho.innerHTML = document.getElementById('valorCofrinho').innerText;
+    localStorage.setItem("cofrinhos", JSON.stringify(cofrinhos));
+}
 
-    let tempoCofrinho = document.createElement('p');
-    tempoCofrinho.innerHTML = document.getElementById('tempoCofrinho').innerText;
+function carregarCofrinhos() {
+    let cofrinhosSalvos = localStorage.getItem("cofrinhos");
+    if (cofrinhosSalvos) {
+        let cofrinhos = JSON.parse(cofrinhosSalvos);
+        cofrinhos.forEach(cofrinho => {
+            adicionarCofrinho(cofrinho);
+        });
+    }
+}
 
-    let guardarCofrinho = document.createElement('h3');
-    guardarCofrinho.innerHTML = document.getElementById('guardarCofrinho').innerText;
+function adicionarCofrinho(data) {
+    let div = document.createElement("div");
+    div.id = "cofrinho" + contadorCofrinho;
+    div.setAttribute("data-tempo", data.tempo);
+    div.setAttribute("data-guardar", data.guardar);
+    div.setAttribute("data-valor", data.valor);
 
-    let imgCofrinho = document.createElement('img');
-    imgCofrinho.src = document.getElementById('prewiew').src;
+    let nomeCofrinho = document.createElement("p");
+    nomeCofrinho.classList.add("nomeCofrinho");
+    nomeCofrinho.innerHTML = data.nome;
 
-    let div = document.createElement('div')
-    div.id = 'cofrinho' + 1
-    contadorCofrinho++;
+    let guardarCofrinho = document.createElement("h6"); 
+    guardarCofrinho.classList.add("guardarCofrinho", "valor");
+    guardarCofrinho.innerHTML = data.guardar;
+
+    let imgCofrinho = document.createElement("img");
+    imgCofrinho.classList.add("imgCofrinho");
+    imgCofrinho.src = data.imagem;
+
+    let i = document.createElement("i");
+    i.classList.add("fas", "fa-trash");
+
+    let button = document.createElement("button");
+    button.id = contadorCofrinho + "Btn";
+    button.classList.add("deletarCofrinho");
+    button.appendChild(i);
 
     div.appendChild(nomeCofrinho);
-    div.appendChild(valorCofrinho);
-    div.appendChild(tempoCofrinho);
     div.appendChild(guardarCofrinho);
     div.appendChild(imgCofrinho);
+    div.appendChild(button);
 
-    document.getElementById('seusCofrinhos').appendChild(div)
+    document.getElementById("seusCofrinhos").appendChild(div);
+
+    contadorCofrinho++;
+
+}
+
+document.getElementById("criarCofrinhoBtn").addEventListener("click", () => {
+    let nomeCofrinho = document.getElementById("nomeCofrinho").innerText.trim();
+    let valorCofrinho = document.getElementById("valorCofrinho").innerText.trim();
+    let tempoCofrinho = document.getElementById("tempoCofrinho").innerText.trim();
+    let guardarCofrinho = document.getElementById("guardarCofrinho").innerText.trim();
+    let imagem = document.getElementById("prewiew").src;
+
+    if (nomeCofrinho === "" || valorCofrinho === "" || tempoCofrinho === "" || guardarCofrinho === "" || imagem === "") {
+        alert("Por favor, preencha o nome e o valor do cofrinho antes de continuar.");
+        return;
+    }
+
+    abrirFerramenta("cofrinhosDiv");
+    abrirPopUp("criarCofrinho");
+
+    let cofrinhoData = {
+        nome: nomeCofrinho,
+        valor: valorCofrinho,
+        imagem: imagem,
+        tempo: tempoCofrinho,
+        guardar: guardarCofrinho
+    };
+
+    adicionarCofrinho(cofrinhoData);
+    salvarCofrinhos();
+
+    document.getElementById("nomeCofrinho").innerText = "";
+    document.getElementById("valorCofrinho").innerText = "";
+    document.getElementById("tempoCofrinho").innerText = "";
+    document.getElementById("guardarCofrinho").innerText = "";
+});
+
+document.addEventListener('click', function(event) {
+    if (event.target.closest('.deletarCofrinho')) {
+        let btn = event.target.closest('.deletarCofrinho');
+        let cofrinho = btn.parentElement;
+
+        if (cofrinho) {
+            let guardarCofrinho = cofrinho.getAttribute("data-guardar") || "O valor guardado";
+
+            let confirmacao = confirm(`Realmente deseja apagar este cofrinho? ${guardarCofrinho} será retirado.`);
+            
+            if (confirmacao) {
+                cofrinho.remove(); 
+                salvarCofrinhos();
+            }
+        }
+    }
+});
+
+let detalhesCofrinhoDiv = document.getElementById('detalhesCofrinhoDiv')
+
+document.querySelector('#seusCofrinhos').addEventListener('click', (event) => {
+    let cofrinho = event.target.closest('div');
+    let detalhesCofrinhoDiv = document.getElementById('detalhesCofrinhoDiv');
+
+    if (event.target.closest('.deletarCofrinho')) {
+        return; 
+    }
+
+    if (cofrinho && detalhesCofrinhoDiv) {
+        detalhesCofrinhoDiv.querySelector('#valorCofrinhoElement').innerText = 'de: ' + cofrinho.getAttribute("data-valor");
+        detalhesCofrinhoDiv.querySelector('#nomeCofrinhoElement').innerText = cofrinho.querySelector('.nomeCofrinho').innerText;
+        detalhesCofrinhoDiv.querySelector('#guardarCofrinhoElement').innerText = cofrinho.getAttribute("data-guardar");
+        detalhesCofrinhoDiv.querySelector('#imgCofrinhoElement').src = cofrinho.querySelector('.imgCofrinho').src;
+        
+        abrirFerramenta('detalhesCofrinhoDiv');
+    }
+
+    localStorage.setItem('ultimoCofrinho', cofrinho.id)
+});
+
+document.addEventListener("DOMContentLoaded", carregarCofrinhos);
+
+document.getElementById('guardarMaisCofrinho').addEventListener('click', () => {
+    abrirPopUp('guardarMaisDiv')
 })
+
+document.querySelector('#guardarMaisDiv .xbtn').addEventListener('click', () => {
+    document.querySelector('#guardarMaisDiv').classList.remove('active')
+    document.body.classList.remove('popUpActive')
+})
+
+document.getElementById('editarCofrinhoAtual').addEventListener('click', () => {
+    let ultimoCofrinhoId = localStorage.getItem('ultimoCofrinho');
+    abrirPopUp('editarCofrinho');
+
+    let cofrinhos = JSON.parse(localStorage.getItem('cofrinhos')) || [];
+    let cofrinho = cofrinhos.find(c => c.id === ultimoCofrinhoId);
+
+    document.getElementById('editarNomeCofrinho').innerText = cofrinho.nome;
+    document.getElementById('editarValorCofrinho').innerText = cofrinho.valor;
+    document.getElementById('editarPrewiew').src = cofrinho.imagem;
+});
