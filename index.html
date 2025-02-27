@@ -112,22 +112,22 @@
                 <div id="contatosrecentes">
                     <button>
                         <i class="fas fa-user usuario"></i>
-                        Fulaneto
+                        Ei
                     </button>
 
                     <button>
                         <i class="fas fa-user usuario"></i>
-                        Fulaneta
+                        Furina
                     </button>
 
                     <button>
                         <i class="fas fa-user usuario"></i>
-                        Fulanetinho
+                        Nahida
                     </button>
 
                     <button>
                         <i class="fas fa-user usuario"></i>
-                        Fulanetinha
+                        Mavuika
                     </button>
                 </div>
             </div>
@@ -136,13 +136,29 @@
         <section id="cofrinhosDiv">
             <div>
                 <h3>Criar Cofrinho</h3>
-                <div>
-                    <button onclick="abrirPopUp('criarCofrinho')">Criar</button>
+                <div style="background-image: linear-gradient(135deg, var(--gold), var(--darkgold)); height: 5rem; overflow: hidden;">
+                    <button style="font-size: 2rem; font-weight: 600;" onclick="abrirPopUp('criarCofrinho')">Criar</button>
                 </div>
             </div>
 
             <div id="seusCofrinhos">
                 <h3>Seus Cofrinhos</h3>
+            </div>
+        </section>
+
+        <section id="detalhesCofrinhoDiv">
+            <img id="imgCofrinhoElement" src="">
+
+            <div>
+                <button id="editarCofrinhoAtual"><i class="fas fa-pen-to-square"></i></button>
+                <h5 style="font-weight: 600;" id="nomeCofrinhoElement"></h5>
+                <h3 id="guardarCofrinhoElement" class="valor"></h3>
+                <p style="opacity: 0.75;" id="valorCofrinhoElement" class="valor"></p>
+            </div>
+
+            <div>
+                <button id="guardarMaisCofrinho">Guardar mais</button>
+                <button id="resgatarCofrinho">Resgatar</button>
             </div>
         </section>
 
@@ -154,11 +170,11 @@
     </main>
 
     <div id="criarCofrinho" class="popUp">
-        <div id="header">
+        <div class="header">
             <h3>Criar Cofrinho</h3>          
             <button class="xbtn" onclick="abrirPopUp('criarCofrinho')"><i class="fas fa-xmark"></i></button>
         </div>
-        <div id="objetivoCofrinhoDiv">
+        <div id="objetivoCofrinhoDiv" class="popUp">
             <p>Para começar, escolha um objetivo:</p>
             <div>
                 <button>
@@ -212,7 +228,7 @@
             <div id="outrosCofrinhoDiv">
                 <div class="divInutil">                
                     <h5>Quanto você deseja juntar?</h5>
-                    <div id="valorCofrinho" contenteditable="true"></div>
+                    <div class="inputEspecial" id="valorCofrinho" contenteditable="true"></div>
                 </div>
 
                 <div class="divInutil">
@@ -222,7 +238,7 @@
 
                 <div class="divInutil">
                     <h5>Quanto você deseja guardar?</h5>
-                    <div id="guardarCofrinho" contenteditable="true"></div>
+                    <div class="inputEspecial" id="guardarCofrinho" contenteditable="true"></div>
                 </div>
             </div>
 
@@ -230,13 +246,50 @@
         </div>
     </div>
 
+    <div id="editarCofrinho" class="popUp">
+        <div id="editarCofrinhoDiv">
+            <p>Qual será o nome do seu cofrinho?</p>
+            <div id="image-container">
+                <img id="prewiew" src="">
+                <label for="fileInput">
+                    <button id="edit-btn"><i class="fas fa-pen-to-square"></i></button>
+                </label>
+                <input type="file" id="fileInput" accept="image/png, image/jpeg, image/jpg" style="display: none;">
+            </div>
+            <div id="nomeCofrinho" contenteditable="true"></div>
+
+            <div id="outrosCofrinhoDiv">
+                <div class="divInutil">                
+                    <h5>Quanto você deseja juntar?</h5>
+                    <div class="inputEspecial" id="editarValorCofrinho" contenteditable="true"></div>
+                </div>
+
+                <div class="divInutil">
+                    <h5>Em quanto tempo você deseja juntar (em meses)?</h5>
+                    <div id="tempoCofrinho" contenteditable="true"></div>
+                </div>
+            </div>
+
+            <button id="editarCofrinhoBtn">Editar Cofrinho</button>
+        </div>
+    </div>
+    
+    <div id="guardarMaisDiv" class="popUp">
+        <div class="header">
+            <h3>Guardar Mais</h3>
+            <button class="xbtn"><i class="fas fa-xmark"></i></button>
+        </div>
+
+        <div id="guardarMaisInput" contenteditable="true"></div>
+    </div>
+
     <span id="border-top-footer"></span>
     <footer>
         <button id="home" onclick="abrirFerramenta('homeDiv')"><i class="fas fa-home"></i></button>
-        <button id="pagar" onclick="abrirFerramenta('transferirDiv')"><i class="fas fa-hand-holding-dollar"></i></button>
+        <button id="pagar" onclick="abrirFerramenta('pixDiv')"><i class="fas fa-hand-holding-dollar"></i></button>
         <button id="notificacoes"><i class="fas fa-bell"></i></button>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="bancoXPTO.js"></script>
 </body>
 </html>
